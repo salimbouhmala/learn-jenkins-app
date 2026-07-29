@@ -1,49 +1,53 @@
 pipeline {
     agent any
+
+    environment {
+        NODE_IMAGE = 'node:18-alpine'
+    }
+
     stages {
-        stage('build') {
-             agent {
+        stage('Build') {
+            agent {
                 docker {
-                    image 'node:18-alpine'
+                    image "${env.NODE_IMAGE}"
                     reuseNode true
                 }
             }
-              
+
             steps {
-             
                 sh '''
-                    echo "trying pipeline build with github"
+                    echo "Building the application"
                     ls -la
                     node --version
                     npm --version
-                    npm ci 
+                    npm ci
                     npm run build
-                    ls -la
-                    '''
+                '''
             }
         }
+
         stage('Test') {
             agent {
                 docker {
-                    image 'node:18-alpine'
+                    image "${env.NODE_IMAGE}"
                     reuseNode true
                 }
             }
+
             steps {
                 sh '''
-                    echo "Test stage"
+                    echo "Running tests"
                     test -f build/index.html
                     npm test
-                   
-                    '''
+                '''
             }
         }
     }
+
     post {
         always {
             echo 'This will always run'
-            // JUnit test results will be published in the Jenkins console output.
-            jUnit 'test-results/junit.xml'
+            junit 'test-results/junit.xml'
         }
     }
 }
