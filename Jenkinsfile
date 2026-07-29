@@ -33,4 +33,10 @@ pipeline {
             }
         }
     }
+    post {
+        always {
+            echo 'This will always run'
+            JUnit test results will be published in the Jenkins console output.
+            jUnit  'test-results/junit.xml'       
+    }
 }
