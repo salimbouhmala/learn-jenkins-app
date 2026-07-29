@@ -10,7 +10,7 @@ pipeline {
                      }
             steps {
              
-                Sh '''
+                sh '''
                     echo "trying pipeline build with github"
                     ls -la
                     node --version
@@ -18,7 +18,7 @@ pipeline {
                     npm ci 
                     npm run build
                     ls -la
-                '''
+                    '''
             }
         }
     }
